@@ -1,5 +1,5 @@
 #FROM - The base image for building a new image in our case is the node. This command must be on top of the Dockerfile.
-FROM node:14
+FROM node:14-alpine
 
 # Create an app directory to hold the application code inside the image
 #RUN mkdir -p /app

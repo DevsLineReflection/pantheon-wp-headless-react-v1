@@ -14,6 +14,7 @@ import {Grid,
 } from '@mui/material';
 import {FormatListBulleted, Category} from '@mui/icons-material';
 import {useState, useEffect} from 'react';
+import {NavLink} from 'react-router-dom';
 import axios from 'axios';
 
 const Sidebar = () => {
@@ -35,7 +36,7 @@ const Sidebar = () => {
     },[]);
 
     return ( 
-        <Grid item xs={2}>
+        <Grid item xs={5} sm={4} md={2}>
             <Paper>
                 <List>
                     <ListItem>
@@ -48,14 +49,17 @@ const Sidebar = () => {
                     {!loading && 
                     
                     categories.map(cat=>
-                        <ListItem key={`cat_${cat.id}`}>
-                            <ListItemButton>
+                        <>
+                        <ListItem key={`cat_${cat.id}`} disablePadding>
+                            <ListItemButton to={`/category/${cat.id}`} component={NavLink} activeClassName="active" disablepadding>
                                 <ListItemIcon>
                                     <Category />
                                 </ListItemIcon>
                                 <ListItemText primary={cat.name} />
                             </ListItemButton>
                         </ListItem>
+                        <Divider />
+                        </>
                     )
                     
                     }

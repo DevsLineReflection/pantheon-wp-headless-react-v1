@@ -18,6 +18,7 @@ import {Grid,
     CardMedia,
     Skeleton,
     Box,
+    Rating
 } from '@mui/material';
 import {FormatListBulleted, Category} from '@mui/icons-material';
 import axios from 'axios';
@@ -34,14 +35,14 @@ const SingleProduct = ({match}) => {
     const consumer_key = "ck_c329e792c17199570591fac87fdedba24d51dc38";
     const consumer_secret = "cs_b6ac8847b7af33d51dca2660a4bcf1529578f37e";
 
-    const add = useContext(CartContext);
+    const appData = useContext(CartContext);
 
     useEffect(() => {
         const fetchProduct = async () => {
             setLoading(true);
             const data = await axios.get(`${baseUrl}wc/v3/products/${productId}?consumer_key=${consumer_key}&consumer_secret=${consumer_secret}`);
             setProduct(data.data);
-            console.log(data.data);
+            // console.log(data.data);
             setLoading(false);
         }
         return fetchProduct();
@@ -60,27 +61,32 @@ const SingleProduct = ({match}) => {
                     <Typography gutterBottom variant="h4" component="div">
                         {product.name}
                     </Typography>
-                    <Typography gutterBottom variant="p" component="div">
-                    <div dangerouslySetInnerHTML={{ __html: product.price_html}}></div>
+                    <Typography gutterbottom variant="p" component="div">
+                        <Rating name="read-only" value={product.average_rating} readOnly />
                     </Typography>
-                    <Typography gutterBottom variant="p" component="div">
-                        Rating: {product.average_rating}
-                    </Typography>
-                    <div dangerouslySetInnerHTML={{ __html: product.description}}></div>
-                    <Button onClick={add} variant="contained" color="error">
-                        Add to Cart
+                    {product.on_sale 
+                        ? 
+                        <p className="price">৳{product.price} <del style={{color:'red'}}>৳{product.regular_price}</del></p>
+                        : 
+                        <p className="price">৳{product.price}</p> 
+                    }
+                    {/* <div dangerouslySetInnerHTML={{ __html: product.description}}></div> */}
+                    <Button onClick={() => appData.buyNow(product.id, product.name, product.price, product.images[0].src)} variant="contained" color="primary">
+                        BUY NOW
                     </Button>
                 </Grid>
             </>)}
             {loading && 
-                    <Grid item xs={12}>
-                        <Card>
-                            <Skeleton variant="rectangular" height={300} />
-                            <Skeleton sx={{mt: 1, mb:0.3}} variant="rectangular" height={16}/>
-                            <Skeleton variant="text"/>
-                            <Skeleton sx={{mb: 1}} variant="text"/>
-                        </Card>
+                    <>
+                    <Grid item xs={6}>
+                        <Skeleton variant="rectangular" height={300} />
                     </Grid>
+                    <Grid item xs={6}>
+                        <Skeleton sx={{mt: 1, mb:0.3}} variant="rectangular" height={16}/>
+                        <Skeleton variant="text"/>
+                        <Skeleton sx={{mb: 1}} variant="text"/>
+                    </Grid>
+                    </>
                 }
             
         </Grid>
